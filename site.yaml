@@ -5,3 +5,41 @@
      user:
        name: daniel
        password: daniel
+   - name: Descargar archivo
+     get_url:
+       url: https://wordpress.org/latest.zip
+       dest: /home/vagrant
+       mode: '0440'
+   - name: Instalar unzip
+     apt:
+       name: "unzip"
+       update_cache: true
+   - name: Descomprimir archivo
+     unarchive:
+       src: /home/vagrant/wordpress-5.8.1.zip
+       dest: /home/vagrant
+       remote_src: True
+   - name: Instalar mariadb
+     apt:
+       name:
+       - mariadb-server
+       - python3-mysqldb
+   - name: Crear base de datos
+     mysql_db:
+       name: daniel_wordpress
+       state: present
+   - name: Crear usuario mariadb
+     mysql_user:
+       name: dani
+       password: dani
+       check_implicit_admin: true
+   - name: Instalar git
+     apt:
+       name:
+       - git
+   - name: Clonar repositorio
+     git:
+       repo: https://github.com/josedom24/ansible_ejemplos.git
+       dest: /home/dani
+       clone: yes
+       update: no
